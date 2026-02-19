@@ -1,7 +1,7 @@
 # ============ НАСТРОЙКИ БОТА ============
 
 # Токен бота (получите от @BotFather)
-BOT_TOKEN = "7703929782:AAF-t-dx5MHP9opJJ2HDZB1urGHdgovBsRM"
+BOT_TOKEN = "7703929782:AAF60zym8294-HNoQZ4s6bw6O5LSTAdgros"
 
 # ID вашего канала (начинается с -100, например: -1001234567890)
 CHANNEL_ID = -1001769135858
