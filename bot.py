@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.types import FSInputFile
 
-from config import BOT_TOKEN, CHANNEL_ID, CHANNEL_USERNAME, PDF_PATH, PDF_NAME, LOG_FILE
+from config import BOT_TOKEN, CHANNEL_ID, CHANNEL_USERNAME, PDF_PATH, PDF_NAME, LOG_FILE, ADMIN_ID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -103,6 +103,33 @@ async def cmd_stats(message: types.Message) -> None:
         
         text = f"📊 Всего скачиваний: {len(lines)}\n📍 Уникальных пользователей: {len(unique_users)}"
         await message.answer(text)
+    except FileNotFoundError:
+        await message.answer("📊 Пока нет скачиваний")
+
+
+@dp.message(Command("mystats"))
+async def cmd_mystats(message: types.Message) -> None:
+    """Показывает полную статистику только админу."""
+    if message.from_user.id != ADMIN_ID:
+        await message.answer("❌ У вас нет доступа к этой команде")
+        return
+    
+    try:
+        with open(LOG_FILE, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        
+        if not lines:
+            await message.answer("📊 Пока нет скачиваний")
+            return
+        
+        text = f"📊 СТАТИСТИКА СКАЧИВАНИЙ\n\n📈 Всего скачиваний: {len(lines)}\n\n👥 Список скачавших:\n\n"
+        text += "".join(lines)
+        
+        if len(text) > 4096:
+            await message.answer(text[:4090])
+            await message.answer(text[4090:])
+        else:
+            await message.answer(text)
     except FileNotFoundError:
         await message.answer("📊 Пока нет скачиваний")
 
